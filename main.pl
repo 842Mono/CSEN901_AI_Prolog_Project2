@@ -3,6 +3,7 @@ posDS(0, 2).
 
 posWW(0, 0, s0).
 posWW(0, 1, s0).
+posJon(2, 2, 0, s0).
 
 maximum_dragon_glasses(3).
 %number of dragon glass
@@ -18,11 +19,11 @@ isWalkable(X, Y, S):-
     maxY(MY),Y =< MY,
     X >= 0, Y >= 0.
 	
-haveDs(S) :- 
+haveDs(S) :-
 	posJon(X, Y, C, S),
 	C > 0.
+	
 
-posJon(2, 2, 0, s0).
 %Successor state of posJon
 posJon(X, Y, C, result(A, S)):-
     (
@@ -37,9 +38,8 @@ posJon(X, Y, C, result(A, S)):-
 			)
 		);
 		(
-			isWalkable(X, Y, S),
-			maximum_dragon_glasses(Z),
-			C1 is C-Z,
+			isWalkable(X, Y, S),			
+			C1 is C-3,
 			posDS(X, Y),
 			(
 				(A = right, posJon(X-1, Y, C1, S));
@@ -75,7 +75,7 @@ posJon(X, Y, C, result(A, S)):-
 
 	
 %Successor state of posWW
-posWW(X, Y, result(A, S)) :-
+posWW(X, Y, result(A, S)):-
 	posWW(X, Y, S),
 	(
 		(A \= killWW);
@@ -99,8 +99,19 @@ posWW(X, Y, result(A, S)) :-
 	).
 	
 	
-killedWW(X, Y, S) :-
-	\+posWW(X, Y, S).
+killedWW(X, Y, s0).
+killedWW(X, Y, result(A, S)):-
+	killedWW(X, Y, S),
+	\+posWW(X, Y, S),
+	(
+	A = right;
+	A = left;
+	A = killWW;
+	A = up;
+	A = down
+	).
+
+	
 
 	
 	
