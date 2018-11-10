@@ -31,10 +31,10 @@ posJon(X, Y, C, result(A, S)):-
 			isWalkable(X, Y, S),
 			\+posDS(X, Y),
 			(
-				(A = right, posJon(X-1, Y, C, S));
-				(A = left, posJon(X+1, Y, C, S));
-				(A = up, posJon(X, Y+1, C, S));
-				(A = down, posJon(X, Y-1, C, S))
+				(A = right, X1 is X-1, posJon(X1, Y, C, S));
+				(A = left,  X2 is X+1, posJon(X2, Y, C, S));
+				(A = up,  Y1 is Y+1, posJon(X, Y1, C, S));
+				(A = down,  Y2 is Y-1, posJon(X, Y2, C, S))
 			)
 		);
 		(
@@ -42,10 +42,10 @@ posJon(X, Y, C, result(A, S)):-
 			C1 is C-3,
 			posDS(X, Y),
 			(
-				(A = right, posJon(X-1, Y, C1, S));
-				(A = left, posJon(X+1, Y, C1, S));
-				(A = up, posJon(X, Y+1, C1, S));
-				(A = down, posJon(X, Y-1, C1, S))
+				(A = right, X1 is X-1, posJon(X1, Y, C1, S));
+				(A = left,  X2 is X+1, posJon(X2, Y, C1, S));
+				(A = up,  Y1 is Y+1, posJon(X, Y1, C1, S));
+				(A = down,  Y2 is Y-1, posJon(X, Y2, C1, S))
 			)
 		)
     );
@@ -53,10 +53,10 @@ posJon(X, Y, C, result(A, S)):-
         (
 			posJon(X, Y, C, S),
 			(
-				(A = right, posObst(X+1, Y));
-				(A = left, posObst(X-1, Y));
-				(A = up, posObst(X, Y-1));
-				(A = down, posObst(X, Y+1))
+				(A = right, X2 is X+1, posObst(X2, Y));
+				(A = left, X1 is X-1, posObst(X1, Y));
+				(A = up, Y2 is Y-1, posObst(X, Y2));
+				(A = down, Y1 is Y+1, posObst(X, Y1))
 			)
 		);
 		(
@@ -65,10 +65,10 @@ posJon(X, Y, C, result(A, S)):-
 			A = killWW,
 			haveDs(S),
 			(
-				posWW(X+1, Y, S);
-				posWW(X-1, Y, S);
-				posWW(X, Y-1, S);
-				posWW(X, Y+1, S)
+				X2 is X+1, posWW(X2, Y, S);
+				X1 is X-1, posWW(X1, Y, S);
+				Y2 is Y-1, posWW(X, Y2, S);
+				Y1 is Y+1, posWW(X, Y1, S)
 			)
 		)
     ).
@@ -81,18 +81,18 @@ posWW(X, Y, result(A, S)):-
 		(A \= killWW);
 		(
 			A = killWW,
-			\+posJon(X-1, Y, C, S),
-			\+posJon(X+1, Y, C, S),
-			\+posJon(X, Y-1, C, S),
-			\+posJon(X, Y+1, C, S)
+			X1 is X-1, \+posJon(X1, Y, C, S),
+			X2 is X+1, \+posJon(X2, Y, C, S),
+			Y1 is Y-1, \+posJon(X, Y1, C, S),
+			Y2 is Y+1, \+posJon(X, Y2, C, S)
 		);
 		(
 			A = killWW,
 			(
-				posJon(X-1, Y, C, S);
-				posJon(X+1, Y, C, S);
-				posJon(X, Y-1, C, S);
-				posJon(X, Y+1, C, S)
+				(X1 is X-1, posJon(X1, Y, C, S));
+				(X2 is X+1, posJon(X2, Y, C, S));
+				(Y1 is Y-1, posJon(X, Y1, C, S));
+				(Y2 is Y+1, posJon(X, Y2, C, S))
 			),
 			\+haveDs(S)
 		)
@@ -111,9 +111,8 @@ killedWW(X, Y, result(A, S)):-
 	A = down
 	).
 
-	
-
-	
+killedWW2(X, Y, S) :-
+	not(posWW(X, Y, S)).		
 	
 	
 	
