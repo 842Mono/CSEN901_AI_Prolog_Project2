@@ -30,14 +30,12 @@ public class GridGenerator
         int dragonStoneX = dragonStoneLocation % n;
         int dragonStoneY = dragonStoneLocation / n;
         
-        //System.out.println("debug: " + whiteWalkersCount + " " + emptyCount + " " + obstaclesCount);
-        
         String stringEncodedGrid = "";
         for(int i = 0; i < n*n - 1; ++i)
         {
             int x = i / n;
             int y = i % n;
-            //System.out.println(x + " " +y);
+            
             if(x == dragonStoneX && y == dragonStoneY)
             {
                 stringEncodedGrid = stringEncodedGrid.concat("D");
@@ -45,16 +43,10 @@ public class GridGenerator
             }
             else
             {
-                //int remainingCellTypes = emptyCount == 0 ? 0 : 1;
-                //remainingCellTypes = whiteWalkersCount == 0 ? remainingCellTypes : remainingCellTypes + 1;
-                //remainingCellTypes = obstaclesCount == 0 ? remainingCellTypes : remainingCellTypes + 1;
-                
-                //int type = remainingCellTypes == 1 ? 0 : random.nextInt(remainingCellTypes);
-                
                 String type = emptyCount == 0 ? "" : "E";
                 type = whiteWalkersCount == 0 ? type : type + "W";
                 type = obstaclesCount == 0 ? type : type + "X";
-                //System.out.println("Debug: " + type);
+                
                 char typeChar = type.charAt(random.nextInt(type.length()));
                 
                 stringEncodedGrid = stringEncodedGrid.concat(Character.toString(typeChar));
