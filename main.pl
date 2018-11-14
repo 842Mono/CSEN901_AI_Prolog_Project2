@@ -1,23 +1,33 @@
-maxX(2).
-maxY(2).
-inventory(5).
+maxX(3).
+maxY(3).
+inventory(10).
 
 %Obstacles
-posObst(0, 1).
 posObst(1, 1).
 
 %WhiteWalkers
-posWW(0, 0, s0).
+posWW(1, 0, s0).
+posWW(3, 0, s0).
 
-posDS(2, 1).
+posDS(3, 1).
+
 
 allWWkilled(S) :-
-    killedWW(0, 0, S).
+    killedWW(1, 0, S),
+    killedWW(3, 0, S).
 
-posJon(2, 2, 0, s0).
-	
+isWalkable(X, Y, S):-
+	\+(posObst(X, Y)),
+	\+(posWW(X, Y, S)),
+	maxX(MaxX),
+	maxY(MaxY),
+	X =< MaxX,
+	Y =< MaxY,
+	X >= 0,
+	Y >= 0.
+
+posJon(3, 3	, 0, s0).
 %Successor state of posJon
-
 posJon(X, Y, C, result(A, S)):-
     (
 		(	
@@ -86,15 +96,10 @@ killedWW(X, Y, result(A, S)):-
 		(
 		(killedWW(X, Y, S))
 		).		
-	
-	
-isWalkable(X, Y, S):-
-	\+(posObst(X, Y)),
-	\+(posWW(X, Y, S)),
-	maxX(MaxX),
-	maxY(MaxY),
-	X =< MaxX,
-	Y =< MaxY,
-	X >= 0,
-	Y >= 0.
 
+iterativekill(S, X) :-
+	call_with_depth_limit(allWWkilled(S), X, _);
+	(
+	X1 is X + 1,
+	iterativekill(S, X1)
+	).
