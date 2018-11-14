@@ -1,10 +1,20 @@
-%maxX(2).
-%maxY(2).
+maxX(2).
+maxY(2).
+inventory(5).
 
-%posObst(1, 1).
-%posDS(2, 1).
+%Obstacles
+posObst(0, 1).
+posObst(1, 1).
 
-%posJon(2, 2, 0, s0).
+%WhiteWalkers
+posWW(0, 0, s0).
+
+posDS(2, 1).
+
+allWWkilled(S) :-
+    killedWW(0, 0, S).
+
+posJon(2, 2, 0, s0).
 	
 %Successor state of posJon
 
@@ -23,7 +33,8 @@ posJon(X, Y, C, result(A, S)):-
 		(
 			isWalkable(X, Y, S),			
 			posDS(X, Y),
-			C = 3,
+			inventory(D),
+			C = D,
 			(
 				(A = right, X1 is X-1, posJon(X1, Y, 0, S));
 				(A = left,  X2 is X+1, posJon(X2, Y, 0, S));
@@ -55,9 +66,7 @@ posJon(X, Y, C, result(A, S)):-
 			)
 		)
     ).
-%posWW(0, 1, s0).
-%posWW(0, 2, s0).
-%posWW(0, 0, s0).
+
 posWW(X, Y, result(A, S)):-
 		posWW(X, Y, S),
 		\+killedWW(X, Y, result(A, S)).
@@ -82,67 +91,10 @@ killedWW(X, Y, result(A, S)):-
 isWalkable(X, Y, S):-
 	\+(posObst(X, Y)),
 	\+(posWW(X, Y, S)),
-	X =< 2,
-	Y =< 2,
+	maxX(MaxX),
+	maxY(MaxY),
+	X =< MaxX,
+	Y =< MaxY,
 	X >= 0,
 	Y >= 0.
 
-allWWkilled(S) :-
-	killedWW(0, 0, S),
-	killedWW(0, 1, S),
-	killedWW(0, 2, S).
-
-	
-	
-
-
-
-
-	
-	
-	
-	
-
-%haveDs(C, S) :-
-%	posJon(_, _, C, S),
-%	C > 0.
-	
-%killedWW(X, Y, s0).
-%killedWW(X, Y, result(A, S)):-
-%	killedWW(X, Y, S),
-%	\+posWW(X, Y, S),
-%	(
-%	A = right;
-%	A = left;
-%	A = killWW;
-%	A = up;
-%	A = down
-%	).
-  
-%Successor state of dsJon
-% dsJon(X, result(A, S)) :-
-% 	(	
-% 		(
-% 				A = killWW, Y is X+1, dsJon(Y,S)
-% 		);
-% 		(
-% 			maximum_dragon_glasses(Z),
-% 			dsJon(X+Z,S),
-% 			(
-% 			(A = right, isWalkable(X+1, Y, S), posDS(X+1, Y));
-% 			(A = left, isWalkable(X-1, Y, S), posDS(X-1, Y));
-% 			(A = up, isWalkable(X, Y-1, S), posDS(X, Y-1));
-% 			(A = down, isWalkable(X, Y+1, S), posDS(X, Y+1))
-% 			)
-			
-% 		)
-% 	);
-%     (
-% 		dsJon(X,S),
-% 		(
-% 		(A = right, isWalkable(X+1, Y, S), \+posDS(X+1, Y));
-% 		(A = left, isWalkable(X-1, Y, S), \+posDS(X-1, Y));
-% 		(A = up, isWalkable(X, Y-1, S), \+posDS(X, Y-1));
-% 		(A = down, isWalkable(X, Y+1, S), \+posDS(X, Y+1))
-% 		)	
-% 	).

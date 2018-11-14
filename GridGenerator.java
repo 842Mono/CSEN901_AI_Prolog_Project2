@@ -1,3 +1,4 @@
+
 import java.util.Random;
 import java.io.*;
 
@@ -5,25 +6,25 @@ public class GridGenerator
 {
     public static void main(String [] args)
     {
-        if(args.length == 0)
-            System.out.println("Please input grid size.");
-        if(!args[0].matches("-?\\d+"))
-            System.out.println("Please input an integer.");
-        int n = Integer.parseInt(args[0]);
-        if(n < 3)
-            System.out.println("Grid size must be at least 3x3.");
+//        if(args.length == 0)
+//            System.out.println("Please input grid size.");
+//        if(!args[0].matches("-?\\d+"))
+//            System.out.println("Please input an integer.");
+//        int n = Integer.parseInt(args[0]);
+//        if(n < 3)
+//            System.out.println("Grid size must be at least 3x3.");
         
-        GeneratePrologFile(GenerateGridString(n), n);
+        GeneratePrologFile(GenerateGridString(3), 3);
     }
     
     static String GenerateGridString(int n)
     {
         Random random = new Random();
-        int whiteWalkersCount = random.nextInt(n*(n-1)) + 1; // including obstacles for now
+        int whiteWalkersCount = random.nextInt(n) + 2; // including obstacles
         
         int emptyCount = n*n - 1 - whiteWalkersCount - 1; // bottom right is always empty
         
-        int obstaclesCount = whiteWalkersCount - random.nextInt(1 + whiteWalkersCount/2) - 1;
+        int obstaclesCount = random.nextInt(1 + whiteWalkersCount/3) + 1;
         whiteWalkersCount -= obstaclesCount; // take out the obstacles
         
         int dragonStoneLocation = random.nextInt(n*n - 1);
@@ -70,7 +71,9 @@ public class GridGenerator
 
     static void GeneratePrologFile(String gridString, int n)
     {
-        String prolog = "maxX(" + n + ").\nmaxY(" + n + ").\n\n%Obstacles\n";
+        Random random = new Random();
+        int inventory = random.nextInt(n*n/2) + 4;
+        String prolog = "maxX(" + (n-1) + ").\nmaxY(" + (n-1) + ").\ninventory(" + inventory + ").\n\n%Obstacles\n";
         for(int i = 0; i < gridString.length() - 1; ++i)
         {
             if(gridString.charAt(i) == 'X')
@@ -78,11 +81,14 @@ public class GridGenerator
         }
         
         int findDSx = 0, findDSy = 0;
+        String helperCode = "\n\nallWWkilled(S) :-\n";
         prolog = prolog.concat("\n%WhiteWalkers\n");
         for(int i = 0; i < gridString.length() - 1; ++i)
         {
-            if(gridString.charAt(i) == 'W')
-                prolog = prolog.concat("posWW(" + i % n + ", "+ i / n + ").\n");
+            if(gridString.charAt(i) == 'W') {
+                prolog = prolog.concat("posWW(" + i % n + ", "+ i / n + ", s0).\n");
+                helperCode = helperCode.concat("    killedWW(" + i % n + ", " + i / n + ", S).\n");
+            }
             if(gridString.charAt(i) == 'D')
             {
                 findDSx = i % n;
@@ -91,12 +97,13 @@ public class GridGenerator
         }
         prolog = prolog.concat("\nposDS(" + findDSx + ", " + findDSy + ").\n");
         
-        System.out.println("\n\n%Generated Prolog Code:\n" + prolog);
+        System.out.println("\n\n%Generated Prolog Code:\n" + prolog + helperCode);
         
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
         new FileOutputStream("grid.pl"), "utf-8")))
         {
-            writer.write(prolog);
+            writer.write(prolog + helperCode);
+
         }
         catch(Exception e){ System.out.print(e); }
     }
