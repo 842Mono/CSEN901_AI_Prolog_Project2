@@ -1,16 +1,11 @@
+maxX(2).
+maxY(2).
 
-isWalkable(X, Y, S):-
-    not(posObst(X, Y)),
-    not(posWW(X, Y, S)),
-    maxX(MX), X =< MX,
-    maxY(MY),Y =< MY,
-    X >= 0, Y >= 0.
-	
-haveDs(X, Y, C, S) :-
-	posJon(X, Y, C, S),
-	C > 0.
-	
+posObst(1, 1).
+posDS(2, 1).
 
+posJon(2, 2, 0, s0).
+	
 %Successor state of posJon
 
 posJon(X, Y, C, result(A, S)):-
@@ -27,13 +22,13 @@ posJon(X, Y, C, result(A, S)):-
 		);
 		(
 			isWalkable(X, Y, S),			
-			C1 is C-3,
 			posDS(X, Y),
+			C = 3,
 			(
-				(A = right, X1 is X-1, posJon(X1, Y, C1, S));
-				(A = left,  X2 is X+1, posJon(X2, Y, C1, S));
-				(A = up,  Y1 is Y+1, posJon(X, Y1, C1, S));
-				(A = down,  Y2 is Y-1, posJon(X, Y2, C1, S))
+				(A = right, X1 is X-1, posJon(X1, Y, 0, S));
+				(A = left,  X2 is X+1, posJon(X2, Y, 0, S));
+				(A = up,  Y1 is Y+1, posJon(X, Y1, 0, S));
+				(A = down,  Y2 is Y-1, posJon(X, Y2, 0, S))
 			)
 		)
     );
@@ -41,93 +36,61 @@ posJon(X, Y, C, result(A, S)):-
         (
 			posJon(X, Y, C, S),
 			(
-				(A = right, X2 is X+1, posObst(X2, Y));
-				(A = left, X1 is X-1, posObst(X1, Y));
-				(A = up, Y2 is Y-1, posObst(X, Y2));
-				(A = down, Y1 is Y+1, posObst(X, Y1))
+				(A = right, X2 is X+1, \+isWalkable(X2, Y, S));
+				(A = left, X1 is X-1,  \+isWalkable(X1, Y, S));
+				(A = up, Y2 is Y-1,  \+isWalkable(X, Y2, S));
+				(A = down, Y1 is Y+1,  \+isWalkable(X, Y1, S))
 			)
 		);
 		(
-			
-			C1 is C+1,
-			haveDs(X, Y, C1, S),
+			posJon(X, Y, C1, S),
+			C1 > 0,
+			C is C1-1,
 			A = killWW,	
 			(
-				X2 is X+1, posWW(X2, Y, S);
-				X1 is X-1, posWW(X1, Y, S);
-				Y2 is Y-1, posWW(X, Y2, S);
-				Y1 is Y+1, posWW(X, Y1, S)
-			),
-			
-			posJon(X, Y, C1, S)
+				(X2 is X+1, posWW(X2, Y, S));
+				(X1 is X-1, posWW(X1, Y, S));
+				(Y2 is Y-1, posWW(X, Y2, S));
+				(Y1 is Y+1, posWW(X, Y1, S))
+			)
 		)
     ).
-
-	
-%Successor state of posWW
-posWW(X, Y, result(A, S)):-
-	posWW(X, Y, S),
-	(
-		
-		(
-			A \= killWW,
-			(
-				(X1 is X-1, \+posJon(X1, Y, C, S));
-				(X2 is X+1, \+posJon(X2, Y, C, S));
-				(Y1 is Y-1, \+posJon(X, Y1, C, S));
-				(Y2 is Y+1, \+posJon(X, Y2, C, S))
-			);
-			(
-				(X1 is X-1, posJon(X1, Y, C, S));
-				(X2 is X+1, posJon(X2, Y, C, S));
-				(Y1 is Y-1, posJon(X, Y1, C, S));
-				(Y2 is Y+1, posJon(X, Y2, C, S))
-			)
-		);
-		
-		(
-			A = killWW,
-			(
-				(X1 is X-1, \+posJon(X1, Y, C, S)),
-				(X2 is X+1, \+posJon(X2, Y, C, S)),
-				(Y1 is Y-1, \+posJon(X, Y1, C, S)),
-				(Y2 is Y+1, \+posJon(X, Y2, C, S))
-			)
-		);
-		(
-			A = killWW,
-			(
-				(X1 is X-1, posJon(X1, Y, C, S), \+haveDs(X1, Y, C, S));
-				(X2 is X+1, posJon(X2, Y, C, S), \+haveDs(X2, Y, C, S));
-				(Y1 is Y-1, posJon(X, Y1, C, S), \+haveDs(X, Y1, C, S));
-				(Y2 is Y+1, posJon(X, Y2, C, S), \+haveDs(X, Y2, C, S))
-			)
-		)
-	).
-	
-	
-
-killedWW2(X, Y, S) :-
-not(posWW(X, Y, S)).		
-
-
-
-posObst(1, 1).
-posObst(0, 1).
-posDS(2, 1).
-
-posJon(2, 2, 0, s0).
-
-maximum_dragon_glasses(3).
-
-maxX(2).
-maxY(2).
-
+posWW(0, 1, s0).
+posWW(0, 2, s0).
 posWW(0, 0, s0).
+posWW(X, Y, result(A, S)):-
+		posWW(X, Y, S),
+		\+killedWW(X, Y, result(A, S)).
+		
 
+%Successor state of killedWW
+killedWW(X, Y, result(A, S)):-	
+		(
+			A = killWW,
+			(
+				(X1 is X-1, posJon(X1, Y, C, S), C > 0);
+				(X2 is X+1, posJon(X2, Y, C, S), C > 0);
+				(Y1 is Y-1, posJon(X, Y1, C, S), C > 0);
+				(Y2 is Y+1, posJon(X, Y2, C, S), C > 0)
+			)
+		);
+		(
+		(killedWW(X, Y, S))
+		).		
+	
+	
+isWalkable(X, Y, S):-
+	\+(posObst(X, Y)),
+	\+(posWW(X, Y, S)),
+	X =< 2,
+	Y =< 2,
+	X >= 0,
+	Y >= 0.
 
-
-
+allWWkilled(S) :-
+	killedWW(0, 0, S),
+	killedWW(0, 1, S),
+	killedWW(0, 2, S).
 
 	
 	
@@ -136,6 +99,13 @@ posWW(0, 0, s0).
 
 
 	
+	
+	
+	
+
+%haveDs(C, S) :-
+%	posJon(_, _, C, S),
+%	C > 0.
 	
 %killedWW(X, Y, s0).
 %killedWW(X, Y, result(A, S)):-
