@@ -1,11 +1,3 @@
-%maxX(2).
-%maxY(2).
-
-%posObst(1, 1).
-%posDS(2, 1).
-
-%posJon(2, 2, 0, s0).
-	
 %Successor state of posJon
 posJon(X, Y, C, result(A, S)):-
     (
@@ -20,9 +12,10 @@ posJon(X, Y, C, result(A, S)):-
 			)
 		);
 		(
-			isWalkable(X, Y, S),			
+			isWalkable(X, Y, S),
 			posDS(X, Y),
-			C = 3,
+			inventory(I),
+			C = I,
 			(
 				(A = right, X1 is X-1, posJon(X1, Y, 0, S));
 				(A = left,  X2 is X+1, posJon(X2, Y, 0, S));
@@ -54,9 +47,7 @@ posJon(X, Y, C, result(A, S)):-
 			)
 		)
     ).
-%posWW(0, 1, s0).
-%posWW(0, 2, s0).
-%posWW(0, 0, s0).
+
 posWW(X, Y, result(A, S)):-
 		posWW(X, Y, S),
 		\+killedWW(X, Y, result(A, S)).
@@ -81,24 +72,21 @@ killedWW(X, Y, result(A, S)):-
 isWalkable(X, Y, S):-
 	\+(posObst(X, Y)),
 	\+(posWW(X, Y, S)),
-	X =< 2,
-	Y =< 2,
+	maxX(MX),
+	maxY(MY),
+	X =< MX,
+	Y =< MY,
 	X >= 0,
 	Y >= 0.
 
 allWWkilled(S) :-
-	killedWW(0, 0, S).
-
-	
-	
-
+    killedWW(1, 0, S),
+    killedWW(2, 0, S),
+    killedWW(0, 2, S).
 
 
 
-	
-	
-	
-	
+
 
 %haveDs(C, S) :-
 %	posJon(_, _, C, S),
