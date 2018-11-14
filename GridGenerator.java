@@ -74,7 +74,7 @@ public class GridGenerator
         for(int i = 0; i < gridString.length() - 1; ++i)
         {
             if(gridString.charAt(i) == 'X')
-                prolog = prolog.concat("posObst(" + i / n + ", "+ i % n + ").\n");
+                prolog = prolog.concat("posObst(" + i % n + ", "+ i / n + ").\n");
         }
         
         int findDSx = 0, findDSy = 0;
@@ -82,7 +82,7 @@ public class GridGenerator
         for(int i = 0; i < gridString.length() - 1; ++i)
         {
             if(gridString.charAt(i) == 'W')
-                prolog = prolog.concat("posWW(" + i / n + ", "+ i % n + ").\n");
+                prolog = prolog.concat("posWW(" + i % n + ", "+ i / n + ").\n");
             if(gridString.charAt(i) == 'D')
             {
                 findDSx = i % n;
