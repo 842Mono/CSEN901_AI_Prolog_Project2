@@ -31,7 +31,7 @@ posJon(X, Y, C, result(A, S)):-
 			)
 		);
 		(
-			isWalkable(X, Y, S),			
+			isWalkable(X, Y, S),
 			posDS(X, Y),
 			inventory(D),
 			C = D,
