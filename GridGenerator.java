@@ -87,7 +87,7 @@ public class GridGenerator
         {
             if(gridString.charAt(i) == 'W') {
                 prolog = prolog.concat("posWW(" + i % n + ", "+ i / n + ", s0).\n");
-                helperCode = helperCode.concat("    killedWW(" + i % n + ", " + i / n + ", S).\n");
+                helperCode = helperCode.concat("    killedWW(" + i % n + ", " + i / n + ", S),\n");
             }
             if(gridString.charAt(i) == 'D')
             {
@@ -95,6 +95,7 @@ public class GridGenerator
                 findDSy = i / n;
             }
         }
+        helperCode = helperCode.substring(0, helperCode.length() - 2) + ".\n";
         prolog = prolog.concat("\nposDS(" + findDSx + ", " + findDSy + ").\n");
         
         System.out.println("\n\n%Generated Prolog Code:\n" + prolog + helperCode);
