@@ -97,6 +97,7 @@ public class GridGenerator
         }
         helperCode = helperCode.substring(0, helperCode.length() - 2) + ".\n";
         prolog = prolog.concat("\nposDS(" + findDSx + ", " + findDSy + ").\n");
+        prolog = prolog.concat("\nposJon("+ n-1 + ", " + n-1 + ", 0, s0).\n");
         
         System.out.println("\n\n%Generated Prolog Code:\n" + prolog + helperCode);
         
