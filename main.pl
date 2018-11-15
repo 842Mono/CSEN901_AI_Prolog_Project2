@@ -1,16 +1,20 @@
-maxX(3).
-maxY(3).
-inventory(10).
+maxX(2).
+maxY(2).
+inventory(5).
 
 %Obstacles
 posObst(1, 1).
 
 %WhiteWalkers
 posWW(1, 0, s0).
-posWW(3, 0, s0).
 
-posDS(3, 1).
+posDS(0, 0).
 
+posJon(2, 2, 0, s0).
+
+
+allWWkilled(S) :-
+    killedWW(1, 0, S).
 
 allWWkilled(S) :-
     killedWW(1, 0, S),
@@ -26,7 +30,6 @@ isWalkable(X, Y, S):-
 	X >= 0,
 	Y >= 0.
 
-posJon(3, 3	, 0, s0).
 %Successor state of posJon
 posJon(X, Y, C, result(A, S)):-
     (
