@@ -95,7 +95,7 @@ public class GridGenerator
                 findDSy = i / n;
             }
         }
-        helperCode = helperCode.substring(0, helperCode.length() - 2) + ".";
+        helperCode = helperCode.substring(0, helperCode.length() - 2) + ".\n";
         prolog = prolog.concat("\nposDS(" + findDSx + ", " + findDSy + ").\n");
         
         System.out.println("\n\n%Generated Prolog Code:\n" + prolog + helperCode);
