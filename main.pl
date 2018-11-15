@@ -98,8 +98,12 @@ killedWW(X, Y, result(A, S)):-
 		).		
 
 iterativekill(S, X) :-
-	call_with_depth_limit(allWWkilled(S), X, _);
-	(
+	call_with_depth_limit(allWWkilled(S), X, R),
+	R \= depth_limit_exceeded.
+	
+	
+iterativekill(S, X) :-
+	call_with_depth_limit(allWWkilled(S), X, R),
+	R = depth_limit_exceeded,
 	X1 is X + 1,
-	iterativekill(S, X1)
-	).
+	iterativekill(S, X1).
