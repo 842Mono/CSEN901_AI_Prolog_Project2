@@ -16,10 +16,6 @@ posJon(2, 2, 0, s0).
 allWWkilled(S) :-
     killedWW(1, 0, S).
 
-allWWkilled(S) :-
-    killedWW(1, 0, S),
-    killedWW(3, 0, S).
-
 isWalkable(X, Y, S):-
 	\+(posObst(X, Y)),
 	\+(posWW(X, Y, S)),
