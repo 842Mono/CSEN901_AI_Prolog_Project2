@@ -1,24 +1,30 @@
 maxX(2).
 maxY(2).
-inventory(5).
+inventory(4).
 
 %Obstacles
-posObst(1, 1).
+posObst(0, 0).
 
 %WhiteWalkers
-posWW(1, 0, s0).
+posWW(2, 0, s0).
+posWW(2, 1, s0).
+posWW(0, 1, s0).
+posWW(0, 2, s0).
 
-posDS(0, 0).
+posDS(1, 0).
 
 posJon(2, 2, 0, s0).
 
 
 allWWkilled(S) :-
-    killedWW(1, 0, S).
-
+	killedWW(0, 2, S),
+	killedWW(0, 1, S),
+    killedWW(2, 0, S),
+    killedWW(2, 1, S).
+	
 isWalkable(X, Y, S):-
 	\+(posObst(X, Y)),
-	\+(posWW(X, Y, S)),
+	(\+(posWW(X, Y, S)) ; killedWW(X, Y, S)),
 	maxX(MaxX),
 	maxY(MaxY),
 	X =< MaxX,
